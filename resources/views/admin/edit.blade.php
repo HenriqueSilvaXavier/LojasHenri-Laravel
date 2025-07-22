@@ -1,0 +1,81 @@
+@extends('layouts.main')
+
+@section('title', 'Editar Produto')
+
+@section('content')
+<div id="product-create-container" class="col-md-6 offset-md-3 bg-white p-4 rounded shadow-sm">
+  <h1 class="text-center mb-4" style="font-family: 'Eczar', serif; color: #F2A340;">Edição de Produto</h1>
+
+  <form action="{{ route('produtos.update', $produto->id) }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
+
+    <div class="form-group mb-3">
+      <label for="imagem">Imagem do Produto:</label>
+      <input type="file" id="imagem" name="imagem" class="form-control-file">
+
+      {{-- Mostrar imagem atual, caso exista --}}
+      @if ($produto->imagem)
+          <img src="/img/produtos/{{ $produto->imagem }}" alt="{{ $produto->titulo }}" class="img-preview mt-2" style="max-height: 100px;">
+      @endif
+
+      {{-- Campo oculto para manter o nome da imagem antiga --}}
+      <input type="hidden" name="imagem_atual" value="{{ $produto->imagem }}">
+  </div>
+
+    <div class="form-group mb-3">
+      <label for="nome">Nome:</label>
+      <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome do produto" value="{{ $produto->nome }}">
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="descricao">Descrição:</label>
+      <textarea name="descricao" id="descricao" class="form-control" placeholder="Descreva o produto">{{ $produto->descricao }}</textarea>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="preco">Preço:</label>
+      <input type="number" step="0.01" class="form-control" id="preco" name="preco" placeholder="Preço do produto" value="{{ $produto->preco }}">
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="preco">Promoção:</label>
+      <input type="number" class="form-control" id="promocao" name="promocao" placeholder="Promoção do produto" value="{{ $produto->promocao }}">
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="categoria">Categoria:</label>
+        <select name="categoria" id="categoria" class="form-control">
+            @foreach($categorias as $categoria)
+              @if($produto->categoria == $categoria)
+                <option value="{{ $categoria }}" selected>{{ $categoria }}</option>
+              @else
+                <option value="{{ $categoria }}">{{ $categoria }}</option>
+              @endif
+            @endforeach
+        </select>
+        </div>
+<div class="form-group mb-3">
+      <label for="estoque">Estoque:</label>
+      <input type="number" class="form-control" id="estoque" name="estoque" placeholder="Estoque do produto" value="{{ $produto->estoque }}">
+    </div>
+    <div class="text-center">
+      <input type="submit" class="btn btn-primary px-5 py-2" value="Editar Produto">
+    </div>
+  </form>
+</div>
+
+@section('scripts')
+<script>
+  $(document).ready(function() {
+    $('#categoria').select2({
+      tags: true,
+      placeholder: "Escolha ou digite uma categoria",
+      allowClear: true
+    });
+  });
+</script>
+
+@endsection
+@endsection
+
