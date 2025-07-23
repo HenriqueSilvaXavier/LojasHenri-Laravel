@@ -1,4 +1,8 @@
 pandas==2.2.2
 scikit-learn==1.5.2
 nltk==3.9.1
+<<<<<<< HEAD
 numpy==1.26.4
+=======
+numpy==1.26.4
+>>>>>>> 023de10 (Adição da tag Esgotado nos produtos cujo estoque é 0)

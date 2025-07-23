@@ -10,6 +10,9 @@
         @forelse ($produtos as $produto)
             <div class="grid-itens !bg-orange border-2 border-orange-500 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-200 block relative p-4 max-w-xs" onclick="abrirProduto({{ $produto->id }})">
                 <div class="img-container">
+                    @if ($produto->estoque < 1)
+                        <span class="esgotado-categ badge bg-danger position-absolute m-2">Esgotado</span>
+                    @endif
                     <img src="{{ asset('img/produtos/' . $produto->imagem) }}" alt="{{ $produto->nome }}" class="produto-imagem mx-auto mb-4">
                     <!-- Ícone do carrinho -->
                     <img

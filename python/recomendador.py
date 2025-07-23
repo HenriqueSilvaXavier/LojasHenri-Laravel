@@ -102,7 +102,9 @@ for pid, dist_pond in produtos_proximos:
 produtos_ordenados = sorted(produtos_filtrados.items(), key=lambda x: x[1])
 
 # Garante que o produto ainda existe no CSV
-produtos_validos = set(produtos_df['id'].astype(int))
+# Garante que o produto ainda existe no CSV E tem estoque > 0
+produtos_df['estoque'] = produtos_df['estoque'].fillna(0).astype(int)
+produtos_validos = set(produtos_df[produtos_df['estoque'] > 0]['id'].astype(int))
 recomendados_filtrados = []
 
 for pid, _ in produtos_ordenados:

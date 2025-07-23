@@ -17,6 +17,7 @@
             <option value="preco" {{ request('campo') == 'preco' ? 'selected' : '' }}>Preço</option>
             <option value="categoria" {{ request('campo') == 'categoria' ? 'selected' : '' }}>Categoria</option>
             <option value="promocao" {{ request('campo') == 'promocao' ? 'selected' : '' }}>Promoção</option>
+            <option value="estoque" {{ request('campo') == 'estoque' ? 'selected' : '' }}>Estoque</option>
         </select>
 
         <input type="text" name="search" placeholder="Buscar..." value="{{ request('search') }}"
@@ -67,7 +68,19 @@
         {{ $produtos->links() }}
     </div>
 </div>
-<script> 
-    document.body.style.width = 'fit-content';
+<script>
+    function ajustarLarguraBody() {
+        if (window.innerWidth <= 575) {
+            document.body.style.width = 'fit-content';
+        } else {
+            document.body.style.width = '100%';
+        }
+    }
+
+    // Executa ao carregar a página
+    ajustarLarguraBody();
+
+    // Atualiza ao redimensionar
+    window.addEventListener('resize', ajustarLarguraBody);
 </script>
 @endsection

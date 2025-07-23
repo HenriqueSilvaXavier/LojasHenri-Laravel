@@ -39,6 +39,10 @@
                         <p>R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
                     @endif
 
+                    @if ($produto->estoque < 1)
+                        <span class="esgotado-fav badge bg-danger position-absolute m-2">Esgotado</span>
+                    @endif
+
                     <img 
                         src="{{ in_array($produto->id, $carrinho) ? asset('img/carrinho2.png') : asset('img/carrinho.png') }}" 
                         alt="Adicionar ao carrinho" 

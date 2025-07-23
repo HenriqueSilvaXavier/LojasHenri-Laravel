@@ -7,8 +7,13 @@
 <main>
     <h2>{{ $produto->nome }}</h2>
 
-    <div id="aoLado" style="background-color: orange"> 
-        <img src="/img/produtos/{{ $produto->imagem }}" alt="Imagem do produto" id="produtoDestacado">
+    <div id="aoLado-container" style="background-color: orange">
+        <div id="aoLado1"> 
+            @if ($produto->estoque < 1)
+                <span id="esgotado-produto" class="badge bg-danger position-absolute m-2">Esgotado</span>
+            @endif
+            <img src="/img/produtos/{{ $produto->imagem }}" alt="Imagem do produto" id="produtoDestacado">
+        </div>
         <div id="aoLado2">
             <p>{{ $produto->categoria }}</p>
             <p class="inline">
@@ -19,9 +24,10 @@
             </p>
             <p class="inline">({{ $produto->promocao }}% de desconto)</p>
             <div id="inline">
-                <input type="button" value="Comprar" id="comprar" onclick="abrirOverlay()">
-                <input type="button" value="Retirada Rápida" id="retirada">
-
+                @if ($produto->estoque>0)
+                    <input type="button" value="Comprar" id="comprar" onclick="abrirOverlay()">
+                    <input type="button" value="Retirada Rápida" id="retirada">
+                @endif
                 @php
                     $estaFavorito = in_array($produto->id, $favoritos);
                     $estaCarrinho = in_array($produto->id, $carrinho);
@@ -44,7 +50,7 @@
                 <label for="quantidade"><strong>Quantidade:</strong></label>
                 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
                     <button type="button" onclick="alterarQuantidade(-1)">−</button>
-                    <input type="number" id="quantidade" name="quantidade" value="1" min="1" max="{{ $produto->estoque }}" style="width: 60px; text-align: center;" readonly>
+                    <input type="number" id="quantidade" name="quantidade" value="0" min="0" max="{{ $produto->estoque }}" style="width: 60px; text-align: center;" readonly>
                     <button type="button" onclick="alterarQuantidade(1)">+</button>
                     @php
                     $precoBase = $produto->promocao > 0 

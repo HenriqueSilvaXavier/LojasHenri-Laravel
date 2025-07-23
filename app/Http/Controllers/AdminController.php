@@ -16,7 +16,7 @@ class AdminController extends Controller{
 
         $query = Produto::query();
 
-        if ($search && in_array($campo, ['nome', 'preco', 'categoria', 'promocao'])) {
+        if (!is_null($search) && in_array($campo, ['nome', 'preco', 'categoria', 'promocao', 'estoque'])) {
             $query->where($campo, 'like', "%{$search}%");
         }
 

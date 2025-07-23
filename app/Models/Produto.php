@@ -18,6 +18,7 @@ class Produto extends Model
         'preco',
         'promocao',
         'categoria',
+        'estoque'
     ];
     public function avaliacoes(){
         return $this->hasMany(Avaliacao::class);

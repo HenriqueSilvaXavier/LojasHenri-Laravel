@@ -48,6 +48,9 @@
                     </p>
 
                     <!-- Ícone do carrinho -->
+                    @if ($produto->estoque < 1)
+                        <span class="esgotado-fav badge bg-danger position-absolute m-2">Esgotado</span>
+                    @endif
                     <img 
                         src="{{ in_array($produto->id, $carrinho) ? asset('img/carrinho2.png') : asset('img/carrinho.png') }}" 
                         alt="Adicionar ao carrinho" 
@@ -71,9 +74,9 @@
                             class="quantidade-input stop-click" 
                             id="quantidade{{ $produto->id }}" 
                             name="quantidade[{{ $produto->id }}]"
-                            min="1" 
+                            min="0" 
                             max="{{ $produto->estoque }}" 
-                            value="1"
+                            value="0"
                             data-id="{{ $produto->id }}"
                             data-preco="{{ $produto->promocao > 0 ? $precoPromocional : $produto->preco }}">
                     </div>
