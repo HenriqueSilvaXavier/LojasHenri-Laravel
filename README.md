@@ -1,10 +1,10 @@
-# 2. Passo a passo para rodar o projeto: 
+# Passo a passo para rodar o projeto: 
 
-## 2.1 Instalar o XAMPP
+## 1. Instalar o XAMPP
 
 Instale o XAMPP [nesse link](https://www.apachefriends.org/pt_br/index.html) e depois de tê-lo instalado, certifique-se de rodar o Apache e o MySQL com o XAMPP aberto.
 
-## 2.2 Comandos no terminal
+## 2. Comandos no terminal
 
 No terminal Powershell, execute:
 
@@ -12,6 +12,7 @@ No terminal Powershell, execute:
 git clone https://github.com/HenriqueSilvaXavier/LojasHenri-Laravel.git
 composer install
 ```
+## 3. Criação do .env
 
 Em seguida, crie um .env com o conteúdo: 
 ```bash
@@ -86,3 +87,24 @@ VITE_APP_NAME="${APP_NAME}"
 
 ```
 
+Feito isso, execute:
+
+```bash
+
+```
+
+### 4. Caso o projeto utilize alguma parte com Python e NLTK (como recomendações ou processamento de texto), siga os passos abaixo:
+
+
+**Baixe os recursos necessários:**
+Abra o terminal Python ou insira num script:
+
+```python
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+```
+
+Esses pacotes são importantes para análise de texto e remoção de palavras irrelevantes.
+
+Se precisar de ajuda com o ambiente Python, avise!
