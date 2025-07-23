@@ -108,7 +108,7 @@ recomendados_filtrados = []
 for pid, _ in produtos_ordenados:
     if pid in produtos_validos:
         recomendados_filtrados.append(pid)
-    if len(recomendados_filtrados) == 6:
+    if len(recomendados_filtrados) == 9:
         break
 
 # Salva recomendações em .txt
