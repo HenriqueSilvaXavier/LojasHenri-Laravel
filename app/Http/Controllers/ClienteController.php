@@ -214,9 +214,13 @@ class ClienteController extends Controller
         return view('cliente.categoria', compact('produtos', 'categ', 'todasCategorias', 'favoritos', 'carrinho'));
     }
 
-    public function buscar($busca)
-    {
-        $produtos = Produto::where('nome', 'like', "%$busca%")->withCount('avaliacoes')->withAvg('avaliacoes', 'nota')->paginate(9);
+    public function buscar(Request $request, $busca){
+        $page = $request->get('page', 1);
+        $produtos = Produto::where('nome', 'like', '%' . $busca . '%')
+            ->withCount('avaliacoes')
+            ->withAvg('avaliacoes', 'nota')
+            ->paginate(9, ['*'], 'page', $page)
+            ->withPath('/buscar/' . urlencode($busca));
 
         $favoritos = DB::table('favoritos_users')
             ->where('user_id', Auth::id())
