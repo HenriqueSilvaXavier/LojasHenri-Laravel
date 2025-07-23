@@ -39,18 +39,20 @@
                     value="{{ $estaFavorito ? 'Desfavoritar' : 'Favoritar' }}" 
                     onclick="favoritarProduto(event, {{ $produto->id }})">
 
+                @if ($produto->estoque > 0)
                 <input 
                     type="button" 
                     id="carrinhoBotao" 
                     value="{{ $estaCarrinho ? 'Remover do Carrinho' : 'Adicionar ao Carrinho' }}" 
                     onclick="adicionarAoCarrinho(event, {{ $produto->id }})">
+                @endif
             </div>
 
             <div id="quantidade-container" style="margin-top: 10px;">
                 <label for="quantidade"><strong>Quantidade:</strong></label>
                 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
                     <button type="button" onclick="alterarQuantidade(-1)">−</button>
-                    <input type="number" id="quantidade" name="quantidade" value="0" min="0" max="{{ $produto->estoque }}" style="width: 60px; text-align: center;" readonly>
+                    <input type="number" id="quantidade" name="quantidade" value="1" min="1" max="{{ $produto->estoque }}" style="width: 60px; text-align: center;" readonly>
                     <button type="button" onclick="alterarQuantidade(1)">+</button>
                     @php
                     $precoBase = $produto->promocao > 0 

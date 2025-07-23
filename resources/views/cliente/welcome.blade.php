@@ -114,12 +114,14 @@
                             <span class="esgotado badge bg-danger position-absolute top-0 start-0 m-2">Esgotado</span>
                         @endif
 
+                        @if ($produto->estoque > 0)
                         <img 
                             src="{{ in_array($produto->id, $carrinho) ? asset('img/carrinho2.png') : asset('img/carrinho.png') }}" 
                             alt="Adicionar ao carrinho" 
                             class="carrinho-icon stop-click" 
                             data-id="{{ $produto->id }}"
                             onclick="adicionarAoCarrinho(event, {{ $produto->id }})">
+                        @endif
 
                         <img 
                             src="{{ in_array($produto->id, $favoritos) ? asset('img/heart2.png') : asset('img/heart.png') }}" 

@@ -43,6 +43,7 @@
                         <span class="esgotado-fav badge bg-danger position-absolute m-2">Esgotado</span>
                     @endif
 
+                    @if ($produto->estoque > 0)
                     <img 
                         src="{{ in_array($produto->id, $carrinho) ? asset('img/carrinho2.png') : asset('img/carrinho.png') }}" 
                         alt="Adicionar ao carrinho" 
@@ -51,6 +52,8 @@
                         data-favorito="{{ in_array($produto->id, $carrinho) ? '1' : '0' }}"
                         onclick="adicionarAoCarrinho(event, {{ $produto->id }})">
 
+                    @endif
+                    
                     {{-- Ícone de favorito --}}
                     <img 
                         src="{{ in_array($produto->id, $favoritos) ? asset('img/heart2.png') : asset('img/heart.png') }}" 

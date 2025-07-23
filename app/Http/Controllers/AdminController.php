@@ -21,8 +21,8 @@ class AdminController extends Controller{
         }
 
         $produtos = $query->paginate(100, ['*'], 'page', $page)
-                        ->appends(['search' => $search, 'campo' => $campo])
-                        ->withPath('/admin');
+            ->appends(['search' => $search, 'campo' => $campo])
+            ->withPath('/admin');
 
         return view('admin.index', compact('produtos'));
     }

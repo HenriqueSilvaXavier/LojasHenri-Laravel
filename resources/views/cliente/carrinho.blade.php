@@ -74,9 +74,9 @@
                             class="quantidade-input stop-click" 
                             id="quantidade{{ $produto->id }}" 
                             name="quantidade[{{ $produto->id }}]"
-                            min="0" 
+                            min="1" 
                             max="{{ $produto->estoque }}" 
-                            value="0"
+                            value="1"
                             data-id="{{ $produto->id }}"
                             data-preco="{{ $produto->promocao > 0 ? $precoPromocional : $produto->preco }}">
                     </div>

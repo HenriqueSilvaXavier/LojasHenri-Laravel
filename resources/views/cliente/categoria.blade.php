@@ -16,6 +16,7 @@
                     @endif
                     <img src="{{ asset('img/produtos/' . $produto->imagem) }}" alt="{{ $produto->nome }}" class="produto-imagem mx-auto mb-4">
                     <!-- Ícone do carrinho -->
+                    @if ($produto->estoque > 0)
                     <img
                         src="{{ in_array($produto->id, $carrinho) ? asset('/img/carrinho2.png') : asset('/img/carrinho.png') }}"
                         alt="Adicionar ao carrinho"
@@ -23,7 +24,9 @@
                         data-id="{{ $produto->id }}"
                         data-favorito="{{ in_array($produto->id, $carrinho) ? '1' : '0' }}"
                         onclick="adicionarAoCarrinho(event, {{ $produto->id }})">
-                    <!-- Ícone de favorito -->
+                    @endif
+                    
+                        <!-- Ícone de favorito -->
                     <img
                         src="{{ in_array($produto->id, $favoritos) ? asset('/img/heart2.png') : asset('/img/heart.png') }}"
                         alt="Favoritar"
