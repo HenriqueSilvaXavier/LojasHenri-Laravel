@@ -56,7 +56,7 @@ class ClienteController extends Controller
             ->select('produto_id', DB::raw('count(*) as total'))
             ->groupBy('produto_id')
             ->orderByDesc('total')
-            ->take(6)
+            ->take(9)
             ->pluck('produto_id')
             ->toArray();
 
@@ -69,7 +69,7 @@ class ClienteController extends Controller
         if ($dados->isEmpty()) {
             $recomendados = Produto::whereNotIn('id', $produtosEmAlta)
                 ->inRandomOrder()
-                ->take(6)
+                ->take(9)
                 ->withCount('avaliacoes')
                 ->withAvg('avaliacoes', 'nota')
                 ->get();
@@ -116,14 +116,14 @@ class ClienteController extends Controller
                 $recomendados = Produto::whereIn('id', $idsFiltrados)
                     ->withCount('avaliacoes')
                     ->withAvg('avaliacoes', 'nota')
-                    ->take(6)
+                    ->take(9)
                     ->get();
             }
         }
 
         // Se não houver recomendações válidas, preencher com aleatórios excluindo em alta
-        if ($recomendados->isEmpty() || $recomendados->count() < 6) {
-            $faltam = 6 - $recomendados->count();
+        if ($recomendados->isEmpty() || $recomendados->count() < 9) {
+            $faltam = 9 - $recomendados->count();
             $idsExistentes = $recomendados->pluck('id')->merge($produtosEmAlta)->all();
 
             $complementares = Produto::whereNotIn('id', $idsExistentes)
