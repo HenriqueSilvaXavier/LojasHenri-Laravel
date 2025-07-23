@@ -11,6 +11,8 @@ No terminal Powershell, execute:
 ```bash
 git clone https://github.com/HenriqueSilvaXavier/LojasHenri-Laravel.git
 composer install
+npm install
+npm run build
 ```
 ## 3. Criação do .env
 
