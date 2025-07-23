@@ -67,4 +67,7 @@
         {{ $produtos->links() }}
     </div>
 </div>
+<script> 
+    document.body.style.width = 'fit-content';
+</script>
 @endsection
