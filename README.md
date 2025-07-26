@@ -252,7 +252,7 @@ Nome: Liberar MySQL
 
 
 ---
-## ✅ 2.8 Edite recomendador.py
+## ✅ 2.8 Edite o recomendador.py
 
 No arquivo recomendador.py dentro da pasta python, nessa parte:
 
