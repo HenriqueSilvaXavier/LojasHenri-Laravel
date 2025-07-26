@@ -188,15 +188,13 @@ div#redesSociais img{
 div#redesSociais{
     background-color: #333;
     padding: 20px;
-    width: 96.86%;
+    width: 100%;
     display:block;
     margin: auto;
     margin-top: 10px;
     margin-bottom: 20px;
 }
-img#whatsapp{
-    transform: translate(0, 30%);
-}
+
 h2#fale{
     color: white;
 }
@@ -205,9 +203,9 @@ div#redesSociais>p{
     color: white
 }
 #redes{
-    width: 135px;
+    width: fit-content;
     display: block;
-    margin:auto;
+    margin: auto;
 }
 span.cinza{
     color:grey !important;
@@ -1278,4 +1276,11 @@ header{
     font-size: 0.9rem;
     margin-top: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+#whatsapp-texto{
+    align-items: center;
+}
+
+footer{
+    width: 100%;
 }
