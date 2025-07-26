@@ -1260,11 +1260,15 @@ header{
 
 .contador-promocao{
     color: black;
-    font-family: 'Oxanium', sans-serif;
+    font-weight: bold;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
 }
 
 .contador-promo {
     text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: bold;
     background-color: white;
     border: 1px solid #facc15;
     color: black;
