@@ -35,7 +35,7 @@
     </div>
     <div class="form-group mb-3">
       <label for="preco">Fim da promoção:</label>
-      <input type="datetime" class="form-control" id="fim_promocao" name="fim_promocao" placeholder="Fim da promoção">
+      <input type="datetime-local" class="form-control" id="fim_promocao" name="fim_promocao" placeholder="Fim da promoção">
     </div>
 
     <div class="form-group mb-4">
