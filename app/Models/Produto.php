@@ -17,9 +17,14 @@ class Produto extends Model
         'imagem',
         'preco',
         'promocao',
+        'fim_promocao',
         'categoria',
         'estoque'
     ];
+    protected $casts = [
+        'fim_promocao' => 'datetime',
+    ];
+
     public function avaliacoes(){
         return $this->hasMany(Avaliacao::class);
     }

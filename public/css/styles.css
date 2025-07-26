@@ -8,6 +8,8 @@ body {
     box-sizing: border-box;
     overflow-x: auto;
 }
+
+
 *, *::before, *::after {
   box-sizing: inherit;
 }
@@ -737,7 +739,7 @@ form[action="{{ route('logout') }}"] {
 #carrinhoBotao {
     display: flex;
     flex-wrap: wrap;
-    background-color: darkgray;
+    background-color: #a9a9a9;
     border: none;
     color: black;
     padding: 7px 15px 7px 40px; /* aumentamos o padding esquerdo para dar espaço ao ícone */
@@ -752,6 +754,11 @@ form[action="{{ route('logout') }}"] {
 
     white-space: normal;
     word-break: break-word;
+}
+
+#carrinhoBotao:hover {
+    background-color: #a1a1a1; /* cor de fundo ao passar o mouse */
+    transform: scale(1.02); /* leve aumento de tamanho ao passar o mouse */
 }
 
 #retirada{
@@ -1249,4 +1256,21 @@ header{
 
 #esgotado-produto{
     font-size: 20px;
+}
+
+.contador-promocao{
+    color: darkgoldenrod;
+}
+
+.contador-promo {
+    text-align: center;
+    background-color: white;
+    border: 1px solid #facc15;
+    color: black;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }

@@ -3,6 +3,28 @@
 @section('title', 'Painel Administrativo')
 
 @section('content')
+<style>
+    body.painel-admin {
+        display: inline-block;
+        width: 100%;
+    }
+    #campo{
+        max-width: 140px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('painel-admin');
+
+        const header = document.getElementById('header');
+        if (header) {
+            header.style.flexDirection = 'row';
+            header.style.justifyContent = 'space-between';
+        }
+    });
+</script>
+
 <div class="container">
     <h2 class="mb-4">Painel Administrativo</h2>
 
@@ -11,8 +33,9 @@
     @if(session('mensagem'))
         <div class="alert alert-success">{{ session('mensagem') }}</div>
     @endif
-    <form method="GET" action="{{ route('admin') }}" id="search-form" class="mb-4 flex flex-wrap items-center gap-2">
-        <select name="campo" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500">
+
+    <form method="GET" action="{{ route('admin') }}" id="search-form" class="mb-4 d-flex flex-wrap gap-2 align-items-center">
+        <select name="campo" class="form-select" id="campo">
             <option value="nome" {{ request('campo') == 'nome' ? 'selected' : '' }}>Nome</option>
             <option value="preco" {{ request('campo') == 'preco' ? 'selected' : '' }}>Preço</option>
             <option value="categoria" {{ request('campo') == 'categoria' ? 'selected' : '' }}>Categoria</option>
@@ -21,66 +44,61 @@
         </select>
 
         <input type="text" name="search" placeholder="Buscar..." value="{{ request('search') }}"
-            class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full sm:w-auto">
+            class="form-control w-auto">
 
-        <button type="submit" id="search-button" class="px-4 py-2 bg-yellow text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500">Buscar</button>
+        <button type="submit" id="search-button" class="btn btn-warning text-white">Buscar</button>
     </form>
 
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Promoção</th>
+                    <th>Fim da Promoção</th>
+                    <th>Categoria</th>
+                    <th>Estoque</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($produtos as $produto)
+                    <tr>
+                        <td>{{ $produto->id }}</td>
+                        <td>{{ $produto->nome }}</td>
+                        <td>R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
+                        <td>{{ $produto->promocao }}%</td>
+                        <td>
+                            @if($produto->fim_promocao)
+                                {{ \Carbon\Carbon::parse($produto->fim_promocao)->format('d/m/Y H:i:s') }}
+                            @else
+                                Sem data de fim de promoção
+                            @endif
+                        </td>
+                        <td>{{ $produto->categoria }}</td> {{-- Relacionamento: $produto->categoria->nome --}}
+                        <td>{{ $produto->estoque }}</td>
+                        <td class="d-flex gap-2">
+                            <a href="{{ route('produtos.edit', $produto->id) }}" class="btn btn-info">Editar</a>
+                            <form action="{{ route('produtos.destroy', $produto->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Deletar</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center">Nenhum produto cadastrado.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Promoção</th>
-                <th>Categoria</th>
-                <th>Estoque</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($produtos as $produto)
-                <tr>
-                    <td>{{ $produto->id }}</td>
-                    <td>{{ $produto->nome }}</td>
-                    <td>R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
-                    <td>{{ $produto->promocao}}%</td>
-                    <td>{{ $produto->categoria }}</td> {{-- Ajuste aqui se for relacionamento --}}
-                    <td>{{ $produto->estoque }}</td>
-                    <td class="d-flex">
-                        <a href="/admin/produtos/{{ $produto->id }}/edit" class="btn btn-info edit-btn"> Editar</a> 
-                        <form action="/admin/produtos/{{ $produto->id }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger delete-btn"> Deletar</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="text-center">Nenhum produto cadastrado.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
     <div class="d-flex justify-content-center">
         {{ $produtos->links() }}
     </div>
 </div>
-<script>
-    function ajustarLarguraBody() {
-        if (window.innerWidth <= 575) {
-            document.body.style.width = 'fit-content';
-        } else {
-            document.body.style.width = '100%';
-        }
-    }
-
-    // Executa ao carregar a página
-    ajustarLarguraBody();
-
-    // Atualiza ao redimensionar
-    window.addEventListener('resize', ajustarLarguraBody);
-</script>
 @endsection

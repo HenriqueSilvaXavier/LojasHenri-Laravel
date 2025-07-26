@@ -38,6 +38,7 @@ class AdminController extends Controller{
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
         $produto->promocao = $request->promocao;
+        $produto->fim_promocao = $request->fim_promocao;
         $produto->categoria = $request->categoria;
         $produto->estoque = $request->estoque;
         if($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
@@ -63,9 +64,14 @@ class AdminController extends Controller{
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
         $produto->promocao = $request->promocao;
+        $produto->fim_promocao = $request->fim_promocao;
         $produto->categoria = $request->categoria;
         $produto->estoque = $request->estoque;
-
+        if ($request->filled('fim_promocao')) {
+            $produto->fim_promocao = $request->fim_promocao;
+        } else {
+            $produto->fim_promocao = null;
+        }
         if($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
             $requestImage = $request->imagem;
             $extension = $requestImage->extension();

@@ -13,6 +13,7 @@ git clone https://github.com/HenriqueSilvaXavier/LojasHenri-Laravel.git
 composer install
 npm install
 npm run build
+pip install -r requirements.txt
 ```
 ## 1.3 Criação do .env
 
@@ -250,21 +251,33 @@ Perfil: Domínio, Privado, Público
 Nome: Liberar MySQL
 
 
+---
+## ✅ 2.8 Edite recomendador.py
 
+No arquivo recomendador.py dentro da pasta python, nessa parte:
 
+```python
+user = 'root'
+password = ''
+host = '127.0.0.1'
+database = 'lojashenri'
+port = 3306
+```
+
+Substitua o 127.0.0.1 pelo ip da sua rede.
 
 ---
-
-## ✅ 2.8 Inicie o Laravel com acesso de rede
+## ✅ 2.9 Inicie o Laravel com acesso de rede
 
 No terminal do Laravel (no PC ou celular via Termux), rode:
 
+```bash
 php artisan serve --host=0.0.0.0 --port=8000
-
+```
 
 ---
 
-## ✅ 2.9 Acesse o projeto Laravel pelo celular
+## ✅ 2.10 Acesse o projeto Laravel pelo celular
 
 No navegador do celular, acesse:
 

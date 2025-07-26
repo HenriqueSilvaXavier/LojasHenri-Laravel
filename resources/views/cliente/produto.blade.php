@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Página Principal')
+@section('title', "Produto: $produto->nome")
 
 @section('content')
 
@@ -22,7 +22,22 @@
                 @endif
                 R$ {{ number_format($produto->preco - ($produto->promocao / 100) * $produto->preco, 2, ',', '.') }}
             </p>
-            <p class="inline">({{ $produto->promocao }}% de desconto)</p>
+            @if ($produto->promocao > 0 && !$produto->fim_promocao || \Carbon\Carbon::parse($produto->fim_promocao)->isFuture())
+                <p class="inline">({{ $produto->promocao }}% de desconto)</p>
+            @endif
+
+            @if ($produto->fim_promocao)
+                @php
+                    $agora = \Carbon\Carbon::now();
+                    $fim = \Carbon\Carbon::parse($produto->fim_promocao);
+                @endphp
+                @if ($fim->isFuture())
+                    <p>Promoção vence em {{ $fim->format('d/m/Y H:i') }}.</p>
+                @endif
+            @else
+                <p><em>Sem data de término definida</em></p>
+            @endif
+
             <div id="inline">
                 @if ($produto->estoque>0)
                     <input type="button" value="Comprar" id="comprar" onclick="abrirOverlay()">
@@ -152,6 +167,7 @@
                 </a>
 
                 <!-- Ícone do carrinho -->
+                @if ($relacionado->estoque > 0)
                 <img 
                     src="{{ in_array($relacionado->id, $carrinho) ? asset('/img/carrinho2.png') : asset('img/carrinho.png') }}" 
                     alt="Adicionar ao carrinho" 
@@ -159,7 +175,7 @@
                     data-id="{{ $relacionado->id }}"
                     data-favorito="{{ in_array($relacionado->id, $carrinho) ? '1' : '0' }}"
                     onclick="adicionarAoCarrinhoRelacionado(event, {{ $relacionado->id }})">
-
+                @endif
                 <!-- Ícone de favorito -->
                 <img 
                     src="{{ in_array($relacionado->id, $favoritos) ? asset('/img/heart2.png') : asset('img/heart.png') }}" 

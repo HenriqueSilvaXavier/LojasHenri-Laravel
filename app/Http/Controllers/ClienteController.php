@@ -29,26 +29,11 @@ class ClienteController extends Controller
             ->where('user_id', $userId)
             ->pluck('produto_id')
             ->toArray();
+
         $carrinho = DB::table('carrinho_users')
             ->where('user_id', $userId)
             ->pluck('produto_id')
             ->toArray();
-
-        // Exporta todos os produtos para CSV
-        $produtos = Produto::all();
-        $produtosCsvPath = storage_path('app/produtos_completos.csv');
-        $produtosFile = fopen($produtosCsvPath, 'w');
-        if ($produtos->count() > 0) {
-            $colunas = array_keys($produtos->first()->getAttributes());
-            fputcsv($produtosFile, $colunas);
-            foreach ($produtos as $produto) {
-                fputcsv($produtosFile, array_values($produto->getAttributes()));
-            }
-        }
-        fclose($produtosFile);
-
-        // Dados de interações
-        $dados = DB::table('user_interactions')->get();
 
         // Produtos em alta nas últimas 24h
         $hoje = Carbon::now()->subHours(24);
@@ -66,35 +51,7 @@ class ClienteController extends Controller
             ->withAvg('avaliacoes', 'nota')
             ->get();
 
-        // Se não houver interações, pega produtos aleatórios sem repetir os em alta
-        if ($dados->isEmpty()) {
-            $recomendados = Produto::whereNotIn('id', $produtosEmAlta)
-                ->inRandomOrder()
-                ->take(9)
-                ->withCount('avaliacoes')
-                ->withAvg('avaliacoes', 'nota')
-                ->get();
-
-            return view('cliente.welcome', [
-                'produtos' => $produtos,
-                'recomendados' => $recomendados,
-                'carrosselProdutos' => $carrosselProdutos,
-                'produtosEmAltaHoje' => $produtosEmAltaHoje,
-                'favoritos' => $favoritos,
-                'carrinho' => $carrinho
-            ]);
-        }
-
-        // Exporta interações para CSV
-        $csvPath = storage_path('app/dados_interacoes.csv');
-        $file = fopen($csvPath, 'w');
-        fputcsv($file, ['user_id', 'produto_id', 'tipo']);
-        foreach ($dados as $linha) {
-            fputcsv($file, [(int)$linha->user_id, (int)$linha->produto_id, $linha->tipo]);
-        }
-        fclose($file);
-
-        // Executa script Python
+        // Executa script Python com userId
         $output = [];
         $escapedUserId = escapeshellarg($userId);
         $basePath = base_path();
@@ -103,7 +60,7 @@ class ClienteController extends Controller
         Log::debug("Saída do recomendador: " . print_r($output, true));
         Log::debug("Código de retorno: " . $return_var);
 
-        // Lê os recomendados do arquivo
+        // Lê os recomendados do arquivo gerado pelo script
         $txtPath = storage_path("app/recomendados_user_{$userId}.txt");
         $recomendados = collect();
 
@@ -111,7 +68,7 @@ class ClienteController extends Controller
             $ids = file($txtPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
             if (!empty($ids)) {
-                // Filtra os IDs para remover os produtos em alta
+                // Remove produtos em alta da lista recomendada
                 $idsFiltrados = array_diff($ids, $produtosEmAlta);
 
                 $recomendados = Produto::whereIn('id', $idsFiltrados)
@@ -122,7 +79,7 @@ class ClienteController extends Controller
             }
         }
 
-        // Se não houver recomendações válidas, preencher com aleatórios excluindo em alta
+        // Fallback: preenche com produtos aleatórios caso necessário
         if ($recomendados->isEmpty() || $recomendados->count() < 9) {
             $faltam = 9 - $recomendados->count();
             $idsExistentes = $recomendados->pluck('id')->merge($produtosEmAlta)->all();
@@ -136,6 +93,9 @@ class ClienteController extends Controller
 
             $recomendados = $recomendados->merge($complementares);
         }
+
+        // Lista completa de produtos para exibição geral (caso necessário)
+        $produtos = Produto::all();
 
         return view('cliente.welcome', [
             'produtos' => $produtos,

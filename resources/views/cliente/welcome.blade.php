@@ -14,10 +14,30 @@
                     src="/img/produtos/{{ $produto->imagem }}" 
                     alt="{{ $produto->nome }}" 
                     style="max-height: 400px; object-fit: cover;">
-                <div class="carousel-caption bg-dark bg-opacity-50 rounded p-2">
-                    <h5 class="text-white">{{ $produto->nome }}</h5>
-                    <span class="badge bg-danger">-{{ $produto->promocao }}%</span>
-                </div>
+                @php
+                    $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
+                @endphp
+
+                @if ($produto->promocao > 0 && (!$fim || $fim->isFuture()))
+                    <div class="carousel-caption bg-dark bg-opacity-50 rounded p-2">
+                        <h5 class="text-white">{{ $produto->nome }}</h5>
+                        <span class="badge bg-danger">-{{ $produto->promocao }}%</span>
+                        
+                        {{-- Contador ao vivo --}}
+                        @if ($fim && $fim->isFuture())
+                            <p 
+                                class="small mt-1 contador-promocao text-white" 
+                                data-fim="{{ $fim->toIso8601String() }}" 
+                                id="contador-carrossel-{{ $produto->id }}"
+                            ></p>
+                        @endif
+                    </div>
+                @else
+                    <div class="carousel-caption bg-dark bg-opacity-50 rounded p-2">
+                        <h5 class="text-white">{{ $produto->nome }}</h5>
+                    </div>
+                @endif
+
                 </div>
             </div>
             @endforeach
@@ -75,17 +95,30 @@
                             <span class="avaliacoes-text">({{ $totalAvaliacoes }})</span>
                         </div>
 
+                        @php
+                            $fim = $recomendado->fim_promocao ? \Carbon\Carbon::parse($recomendado->fim_promocao) : null;
+                        @endphp
 
-                        @if ($recomendado->promocao > 0)
+                        @if ($recomendado->promocao > 0 && (!$fim || $fim->isFuture()))
                             @php
                                 $precoPromocional = $recomendado->preco * (1 - $recomendado->promocao / 100);
+                                $fim = $recomendado->fim_promocao ? \Carbon\Carbon::parse($recomendado->fim_promocao) : null;
                             @endphp
+
                             <p class="card-text text-danger mb-1">
                                 <small><del>R$ {{ number_format($recomendado->preco, 2, ',', '.') }}</del></small>
                             </p>
                             <p class="card-text fw-bold">
                                 R$ {{ number_format($precoPromocional, 2, ',', '.') }}
                             </p>
+
+                            @if ($fim && $fim->isFuture())
+                                <p 
+                                    class="small mb-0 contador-promocao"
+                                    data-fim="{{ $fim->toIso8601String() }}"
+                                    id="contador-recomendado-{{ $recomendado->id }}"
+                                ></p>
+                            @endif
                         @else
                             <p class="card-text">
                                 R$ {{ number_format($recomendado->preco, 2, ',', '.') }}
@@ -146,19 +179,34 @@
                             <span class="avaliacoes-text">({{ $totalAvaliacoes }})</span>
                         </div>
 
-                        @if ($recomendado->promocao > 0)
+                        @php
+                            $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
+                        @endphp
+
+                        @if ($produto->promocao > 0 && (!$fim || $fim->isFuture()))
                             @php
-                                $precoPromocional = $recomendado->preco * (1 - $recomendado->promocao / 100);
+                                $precoPromocional = $produto->preco * (1 - $produto->promocao / 100);
+                                $agora = \Carbon\Carbon::now();
+                                $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
+                                $tempoRestante = $fim && $fim->isFuture() ? $fim->diffForHumans($agora, ['parts' => 2, 'short' => true]) : null;
                             @endphp
                             <p class="card-text text-danger mb-1">
-                                <small><del>R$ {{ number_format($recomendado->preco, 2, ',', '.') }}</del></small>
+                                <small><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></small>
                             </p>
                             <p class="card-text fw-bold">
                                 R$ {{ number_format($precoPromocional, 2, ',', '.') }}
                             </p>
+                            @if ($fim && $fim->isFuture())
+                                <p 
+                                    class="small mb-0 contador-promocao" 
+                                    data-fim="{{ $fim->toIso8601String() }}"
+                                    id="contador-{{ $produto->id }}"
+                                ></p>
+                            @endif
+
                         @else
                             <p class="card-text">
-                                R$ {{ number_format($recomendado->preco, 2, ',', '.') }}
+                                R$ {{ number_format($produto->preco, 2, ',', '.') }}
                             </p>
                         @endif
                     </div>
@@ -283,6 +331,35 @@ function abrirProduto(id) {
         // Aqui você pode fazer uma requisição AJAX ou fetch:
         // fetch(`/favoritos/toggle/${id}`, { method: 'POST' })
     }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const contadores = document.querySelectorAll('.contador-promocao');
+
+    contadores.forEach(contador => {
+        const fim = new Date(contador.dataset.fim);
+
+        function atualizarContador() {
+            const agora = new Date();
+            const diff = fim - agora;
+
+            if (diff <= 0) {
+                contador.textContent = "Promoção encerrada";
+                return;
+            }
+
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutos = Math.floor((diff / (1000 * 60)) % 60);
+            const segundos = Math.floor((diff / 1000) % 60);
+
+            contador.textContent = `Termina em ${dias}d ${horas}h ${minutos}m ${segundos}s`;
+        }
+
+        atualizarContador();
+        setInterval(atualizarContador, 1000);
+    });
+});
+
 </script>
 
 @endsection

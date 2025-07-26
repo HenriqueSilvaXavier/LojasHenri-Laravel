@@ -33,6 +33,10 @@
       <label for="preco">Promoção:</label>
       <input type="number" class="form-control" id="promocao" name="promocao" placeholder="Promoção do produto">
     </div>
+    <div class="form-group mb-3">
+      <label for="preco">Fim da promoção:</label>
+      <input type="datetime" class="form-control" id="fim_promocao" name="fim_promocao" placeholder="Fim da promoção">
+    </div>
 
     <div class="form-group mb-4">
         <label for="categoria">Categoria:</label>
@@ -55,6 +59,8 @@
 
 @section('scripts')
 <script>
+  document.getElementById('header').style.flexDirection = 'row';
+  document.getElementById('header').style.justifyContent = 'space-between';
   $(document).ready(function() {
     $('#categoria').select2({
       tags: true,
@@ -66,4 +72,3 @@
 
 @endsection
 @endsection
-

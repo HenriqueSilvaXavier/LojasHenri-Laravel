@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
 </head>
 <body>
-    <header>
+    <header id="header">
         @php
             $routeAction = request()->route()->getActionName();
             $isClienteController = str_contains($routeAction, 'ClienteController');
@@ -41,10 +41,10 @@
                             <img src="/img/heart.png" alt="Favoritos" id="coracao" class="w-8 h-8">
                         </a>
                     </div>
+                @endif
                     <abbr title="Sair da conta" style="cursor: pointer" onclick="abrirModalPerfil()">
                         <img src="/img/foto.jpg" alt="Perfil" id="perfil" style="cursor: pointer;">
                     </abbr>
-                @endif
             </div>
 
 
@@ -69,6 +69,19 @@
                                 <p>{{ Auth::user()->email }}</p>
                             </div>
                         </div>
+                        @if($isClienteController && Auth::user()->is_admin == 0)
+                            <div class="modal-footer">
+                                <a href="{{ route('admin') }}" class="btn btn-primary">
+                                    <i class="fas fa-tachometer-alt me-1"></i> Ir para o Admin
+                                </a>
+                            </div>
+                        @elseif($isAdminController)
+                            <div class="modal-footer">
+                                <a href="{{ route('cliente.welcome') }}" class="btn btn-primary">
+                                    <i class="fas fa-home me-1"></i> Voltar para o Cliente
+                                </a>
+                            </div>
+                        @endif
                         <div class="modal-footer">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

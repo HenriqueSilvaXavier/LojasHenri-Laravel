@@ -50,14 +50,36 @@
                     <span class="avaliacoes-text">({{ $totalAvaliacoes }})</span>
                 </div>
 
-                @if ($produto->promocao)
+                @php
+                    $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
+                @endphp
+
+                @if ($produto->promocao > 0 && (!$fim || $fim->isFuture()))
                     @php
-                        $precoComDesconto = $produto->preco - ($produto->promocao / 100) * $produto->preco;
+                        $precoPromocional = $produto->preco * (1 - $produto->promocao / 100);
+                        $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
                     @endphp
-                    <p class="text-sm text-white"><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></p>
-                    <p class="text-red-300 font-bold text-lg">R$ {{ number_format($precoComDesconto, 2, ',', '.') }}</p>
+
+                    <div style="display: flex; flex-wrap: wrap;">
+                        <p class="card-text text-danger mb-1">
+                            <small><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></small>
+                        </p>
+                        <p class="card-text fw-bold">
+                            R$ {{ number_format($precoPromocional, 2, ',', '.') }}
+                        </p>
+                    </div>
+
+                    @if ($fim && $fim->isFuture())
+                        <p id="timer-{{ $produto->id }}" 
+                            data-fim-promocao="{{ $produto->fim_promocao }}"
+                            class="contador-promo px-4 py-2 rounded-lg text-sm mt-3 inline-block shadow-sm">
+                        </p>
+
+                    @endif
                 @else
-                    <p class="text-green-300 font-bold text-lg">R$ {{ number_format($produto->preco, 2, ',', '.') }}</p>
+                    <p class="card-text">
+                        R$ {{ number_format($produto->preco, 2, ',', '.') }}
+                    </p>
                 @endif
             </div>
 
@@ -173,6 +195,33 @@ function abrirProduto(id) {
         // Aqui você pode fazer uma requisição AJAX ou fetch:
         // fetch(`/favoritos/toggle/${id}`, { method: 'POST' })
     }
+document.addEventListener('DOMContentLoaded', () => {
+    const timers = document.querySelectorAll('[id^="timer-"]');
+
+    timers.forEach(timer => {
+        const fimPromocao = new Date(timer.dataset.fimPromocao).getTime();
+        function atualizarContador() {
+            const agora = new Date().getTime();
+            const diferenca = fimPromocao - agora;
+
+            if (diferenca <= 0) {
+                timer.textContent = "Promoção encerrada";
+                clearInterval(intervalo);
+                return;
+            }
+
+            const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+
+            timer.textContent = `Termina em ${dias}d ${horas}h ${minutos}m ${segundos}s`;
+        }
+
+        atualizarContador();
+        const intervalo = setInterval(atualizarContador, 1000);
+    });
+});
 </script>
 </div>
 @endsection

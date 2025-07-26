@@ -3,12 +3,14 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 import nltk
 import sys
-import json
 import os
 import logging
-import numpy as np
+import json
+import pymysql
+import random
+from datetime import datetime
 
-# Silencia logs do nltk downloader
+pymysql.install_as_MySQLdb()
 logging.getLogger('nltk.downloader').setLevel(logging.ERROR)
 
 try:
@@ -16,107 +18,162 @@ try:
 except LookupError:
     nltk.download('stopwords', quiet=True)
 
-from nltk.corpus import stopwords
-stopwords_pt = stopwords.words('portuguese')
+stopwords_pt = nltk.corpus.stopwords.words('portuguese')
 
-# Define diretório base do projeto Laravel (um nível acima da pasta 'python')
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-storage_dir = os.path.join(BASE_DIR, 'storage', 'app')
-
-# Captura o user_id passado via CLI
 user_id = int(sys.argv[1])
 
-# Caminhos absolutos dos arquivos
-interacoes_path = os.path.join(storage_dir, 'dados_interacoes.csv')
-produtos_path = os.path.join(storage_dir, 'produtos_completos.csv')
-output_txt_path = os.path.join(storage_dir, f'recomendados_user_{user_id}.txt')
+user = 'root'
+password = ''
+host = '192.168.1.10'
+database = 'lojashenri'
+port = 3306
 
-# Carrega dados
-try:
-    dados = pd.read_csv(interacoes_path)
-    produtos_df = pd.read_csv(produtos_path)
-except:
-    print(json.dumps([]))
-    sys.exit(0)
+conexao_str = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
 
-# Prepara campo textual unificado
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+output_txt_path = os.path.join(BASE_DIR, 'storage', 'app', f'recomendados_user_{user_id}.txt')
+
+# Produtos com estoque
+produtos_df = pd.read_sql("""
+    SELECT id, nome, descricao, categoria, estoque
+    FROM produtos
+    WHERE estoque > 0
+""", conexao_str)
+
 produtos_df['texto'] = (
     produtos_df['nome'].fillna('') + ' ' +
     produtos_df['descricao'].fillna('') + ' ' +
     produtos_df['categoria'].fillna('')
 )
 
-# Vetorização TF-IDF com stopwords em português
 vectorizer = TfidfVectorizer(stop_words=stopwords_pt, max_features=10000)
 tfidf_matrix = vectorizer.fit_transform(produtos_df['texto'])
 
-# Mapeia IDs para índices na matriz
 id_para_indice = {pid: idx for idx, pid in enumerate(produtos_df['id'].astype(int))}
 
-# Filtra interações do usuário
-dados_usuario = dados[dados['user_id'] == user_id]
+# Interações do usuário
+interacoes_df = pd.read_sql(f"""
+    SELECT produto_id, tipo, created_at
+    FROM user_interactions
+    WHERE user_id = {user_id}
+""", conexao_str)
 
-if dados_usuario.empty:
-    print(json.dumps([]))
-    sys.exit(0)
+# Avaliações feitas pelo usuário
+avaliacoes_df = pd.read_sql(f"""
+    SELECT produto_id, nota
+    FROM avaliacoes
+    WHERE user_id = {user_id}
+""", conexao_str)
 
-# Mapear tipo de interação para peso
-peso_tipo = {
-    'comprou': 3,
-    'visualizou': 1
-}
+# Nota média global
+media_avaliacoes_df = pd.read_sql("""
+    SELECT produto_id, AVG(nota) AS media_nota
+    FROM avaliacoes
+    GROUP BY produto_id
+""", conexao_str).set_index('produto_id')
 
-# Soma de pesos por produto
-dados_usuario['peso'] = dados_usuario['tipo'].map(peso_tipo).fillna(0)
-peso_por_produto = dados_usuario.groupby('produto_id')['peso'].sum()
+# Peso base
+peso_tipo = {'comprou': 3, 'visualizou': 1}
+interacoes_df['peso_base'] = interacoes_df['tipo'].map(peso_tipo).fillna(0)
 
-produtos_usuario = peso_por_produto.index.values
-pesos_usuario = peso_por_produto.values
+# Decaimento por tempo
+now = datetime.now()
+interacoes_df['dias'] = (now - pd.to_datetime(interacoes_df['created_at'])).dt.days.clip(lower=0).fillna(0)
+interacoes_df['decaimento'] = interacoes_df['dias'].apply(lambda d: 1 / (1 + d))
+interacoes_df['peso'] = interacoes_df['peso_base'] * interacoes_df['decaimento']
 
-# Treina modelo de vizinhos
-model_text = NearestNeighbors(metric='cosine', algorithm='brute')
-model_text.fit(tfidf_matrix)
+# Junta com nota dada pelo usuário
+interacoes_df = interacoes_df.merge(avaliacoes_df, on='produto_id', how='left')
+
+# Mais peso para nota alta do usuário
+def ajuste_nota_usuario(nota):
+    if pd.isna(nota):
+        return 1.0
+    elif nota <= 2:
+        return 0.5
+    elif nota == 3:
+        return 1.0
+    elif nota == 4:
+        return 1.4
+    elif nota >= 5:
+        return 1.8
+
+interacoes_df['ajuste_nota'] = interacoes_df['nota'].apply(ajuste_nota_usuario)
+interacoes_df['peso'] *= interacoes_df['ajuste_nota']
+
+# Soma peso final por produto
+peso_por_produto = interacoes_df.groupby('produto_id')['peso'].sum().reset_index()
+
+# Nota média global ajustada
+def ajuste_media_global(media):
+    if pd.isna(media):
+        return 1.0
+    elif media <= 2.0:
+        return 0.4
+    elif media <= 3.5:
+        return 0.8
+    elif media >= 4.7:
+        return 1.7
+    elif media >= 4.2:
+        return 1.3
+    else:
+        return 1.0
+
+peso_por_produto['media_nota'] = peso_por_produto['produto_id'].map(media_avaliacoes_df['media_nota'])
+peso_por_produto['ajuste_media'] = peso_por_produto['media_nota'].apply(ajuste_media_global)
+peso_por_produto['peso_final'] = peso_por_produto['peso'] * peso_por_produto['ajuste_media']
+peso_por_produto = peso_por_produto.set_index('produto_id')['peso_final']
+
+produtos_usuario = set(peso_por_produto.index)
+
+# Treina modelo
+model = NearestNeighbors(metric='cosine', algorithm='brute')
+model.fit(tfidf_matrix)
 
 produtos_proximos = []
 
-for pid, peso in zip(produtos_usuario, pesos_usuario):
-    if pid not in id_para_indice:
-        continue
-    idx = id_para_indice[pid]
-    distances, indices = model_text.kneighbors(tfidf_matrix[idx], n_neighbors=7)
-    similares_idx = indices[0][1:]  # ignora ele mesmo
-    similares_dist = distances[0][1:]
-    for sim_idx, dist in zip(similares_idx, similares_dist):
-        sim_id = int(produtos_df.iloc[sim_idx]['id'])
-        produtos_proximos.append((sim_id, dist / peso))
+if not peso_por_produto.empty:
+    total_interagidos = len(produtos_usuario)
+    for pid, peso in peso_por_produto.items():
+        if pid not in id_para_indice:
+            continue
+        idx = id_para_indice[pid]
+        n_vizinhos = min(total_interagidos + 9, tfidf_matrix.shape[0])
+        distances, indices = model.kneighbors(tfidf_matrix[idx], n_neighbors=n_vizinhos)
 
-# Remove produtos já vistos e mantém menor distância ponderada
-produtos_filtrados = {}
-for pid, dist_pond in produtos_proximos:
-    if pid in produtos_usuario:
-        continue
-    if pid not in produtos_filtrados or dist_pond < produtos_filtrados[pid]:
-        produtos_filtrados[pid] = dist_pond
+        for sim_idx, dist in zip(indices[0][1:], distances[0][1:]):
+            sim_id = int(produtos_df.iloc[sim_idx]['id'])
+            if sim_id in produtos_usuario:
+                continue
+            if sim_id not in [p[0] for p in produtos_proximos]:
+                # Aplica ajuste baseado na nota global do produto candidato
+                media_sim = media_avaliacoes_df['media_nota'].get(sim_id, 3.0)
+                bonus_sim = ajuste_media_global(media_sim)
+                dist_ajustada = (dist / peso) / bonus_sim
+                produtos_proximos.append((sim_id, dist_ajustada))
+            if len(produtos_proximos) >= 30:
+                break
 
-# Ordena pelas menores distâncias ponderadas
-produtos_ordenados = sorted(produtos_filtrados.items(), key=lambda x: x[1])
+# Ordena pela distância ajustada
+filtrados = {}
+for pid, dist in produtos_proximos:
+    if pid not in filtrados or dist < filtrados[pid]:
+        filtrados[pid] = dist
 
-# Garante que o produto ainda existe no CSV
-# Garante que o produto ainda existe no CSV E tem estoque > 0
-produtos_df['estoque'] = produtos_df['estoque'].fillna(0).astype(int)
-produtos_validos = set(produtos_df[produtos_df['estoque'] > 0]['id'].astype(int))
-recomendados_filtrados = []
+ordenados = sorted(filtrados.items(), key=lambda x: x[1])
+recomendados = [pid for pid, _ in ordenados][:9]
 
-for pid, _ in produtos_ordenados:
-    if pid in produtos_validos:
-        recomendados_filtrados.append(pid)
-    if len(recomendados_filtrados) == 9:
-        break
+# Preenche com aleatórios se faltar
+produtos_disponiveis = set(produtos_df['id'].astype(int))
+restantes = list(produtos_disponiveis - set(recomendados) - produtos_usuario)
+random.shuffle(restantes)
 
-# Salva recomendações em .txt
+while len(recomendados) < 9 and restantes:
+    recomendados.append(restantes.pop())
+
+# Salva resultado
 with open(output_txt_path, 'w') as f:
-    for pid in recomendados_filtrados:
+    for pid in recomendados:
         f.write(f"{pid}\n")
 
-# Também imprime os resultados em JSON (útil para debug ou uso via stdout)
-print(json.dumps([int(x) for x in recomendados_filtrados]))
+print(json.dumps(recomendados))
