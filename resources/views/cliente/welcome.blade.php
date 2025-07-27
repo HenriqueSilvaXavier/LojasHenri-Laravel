@@ -108,7 +108,7 @@
                             <p class="card-text text-danger mb-1">
                                 <small><del>R$ {{ number_format($recomendado->preco, 2, ',', '.') }}</del></small>
                             </p>
-                            <p class="card-text fw-bold">
+                            <p class="card-text">
                                 R$ {{ number_format($precoPromocional, 2, ',', '.') }}
                             </p>
 
@@ -193,7 +193,7 @@
                             <p class="card-text text-danger mb-1">
                                 <small><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></small>
                             </p>
-                            <p class="card-text fw-bold">
+                            <p class="card-text">
                                 R$ {{ number_format($precoPromocional, 2, ',', '.') }}
                             </p>
                             @if ($fim && $fim->isFuture())
