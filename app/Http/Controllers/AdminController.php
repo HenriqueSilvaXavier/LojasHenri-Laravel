@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Produto;
+use Carbon\Carbon;
 
 class AdminController extends Controller{
     public function adminIndex(Request $request){
@@ -65,7 +66,9 @@ class AdminController extends Controller{
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
         $produto->promocao = $request->promocao;
-        $produto->fim_promocao = $request->fim_promocao;
+        if ($request->fim_promocao) {
+            $produto->fim_promocao = Carbon::parse($request->fim_promocao)->timezone('America/Sao_Paulo');
+        }
         $produto->categoria = $request->categoria;
         $produto->estoque = $request->estoque;
         if($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
@@ -91,7 +94,9 @@ class AdminController extends Controller{
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
         $produto->promocao = $request->promocao;
-        $produto->fim_promocao = $request->fim_promocao;
+        if ($request->fim_promocao) {
+            $produto->fim_promocao = Carbon::parse($request->fim_promocao)->timezone('America/Sao_Paulo');
+        }
         $produto->categoria = $request->categoria;
         $produto->estoque = $request->estoque;
         if ($request->filled('fim_promocao')) {
