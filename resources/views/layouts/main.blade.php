@@ -70,7 +70,7 @@
                                 <p>{{ Auth::user()->email }}</p>
                             </div>
                         </div>
-                        @if($isClienteController && Auth::user()->is_admin == 0)
+                        @if($isClienteController && Auth::user()->isAdmin() == true)
                             <div class="modal-footer">
                                 <a href="{{ route('admin') }}" class="btn btn-primary">
                                     <i class="fas fa-tachometer-alt me-1"></i> Ir para o Admin
