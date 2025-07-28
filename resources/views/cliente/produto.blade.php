@@ -894,6 +894,7 @@ function abrirProduto(id) {
                 document.getElementById("overlay").style.display = "none";
                 const overlay2 = document.getElementById("overlay2");
                 overlay2.style.display = "flex"; // usar 'flex' e não 'block'!
+                atualizarFormasPagamento()
             });
 
             document.getElementById('anterior1').addEventListener('click', function () {
@@ -913,6 +914,7 @@ function abrirProduto(id) {
                 input=document.getElementById('quantidade');
                 const preco = parseFloat({{($produto->promocao > 0 ? $produto->preco - ($produto->preco * ($produto->promocao / 100)) : $produto->preco)}});
                 const quantidade = parseInt(input.value);
+                console.log(quantidade);
                 total += preco * quantidade;
                 total = parseFloat(total.toFixed(2));
 
