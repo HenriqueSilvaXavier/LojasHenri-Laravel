@@ -8,7 +8,7 @@
 
     <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
         @forelse ($produtos as $produto)
-            <div class="grid-itens bg-orange-400 border-2 border-orange-500 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-200 block relative max-w-xs" onclick="abrirProduto({{ $produto->id }})">
+            <div class="grid-itens bg-orange-400 border-2 border-orange-500 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-200 block max-w-xs" onclick="abrirProduto({{ $produto->id }})">
     
                 <div class="img-container">
                     @if ($produto->estoque < 1)
@@ -60,7 +60,7 @@
                         $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
                     @endphp
 
-                    <div style="display: flex; flex-wrap: wrap;">
+                    <div class="precoEDesconto">
                         <p class="card-text text-danger mb-1">
                             <small><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></small>
                         </p>

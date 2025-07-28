@@ -26,7 +26,7 @@
                         {{-- Contador ao vivo --}}
                         @if ($fim && $fim->isFuture())
                             <p 
-                                class="small mt-1 contador-promocao text-white" 
+                                class="contador-promocao" 
                                 data-fim="{{ $fim->toIso8601String() }}" 
                                 id="contador-carrossel-{{ $produto->id }}"
                             ></p>
@@ -167,6 +167,7 @@
 
                     <div class="card-body">
                         <h5 class="card-title">{{ $produto->nome }}</h5>
+                        <p class="text-muted">{{ $produto->categoria }}</p>
                         @php
                             $media = round($produto->avaliacoes_avg_nota ?? 0);
                             $totalAvaliacoes = $produto->avaliacoes_count ?? 0;

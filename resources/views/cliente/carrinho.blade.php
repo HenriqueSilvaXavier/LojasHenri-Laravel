@@ -18,7 +18,7 @@
                 $total = 0;
             @endphp
             @forelse ($produtos as $produto)
-                <li id="produto{{ $produto->id }}" 
+                <li id="produto{{ $produto->id }}" class="produto-item" 
                     style="position: relative; border: 1px solid brown; margin: 10px; padding: 10px; width: 200px; flex: 0 0 auto; cursor: pointer;" 
                     data-id="{{ $produto->id }}"
                 >

@@ -15,7 +15,7 @@
     <div id="favoritos-container">
         <ul>
             @forelse ($produtos as $produto)
-                <li id="produto{{ $produto->id }}" style="position: relative; border: 1px solid brown; margin: 10px; padding: 10px; width: 200px; flex: 0 0 auto;">
+                <li id="produto{{ $produto->id }}" class="produto-item" style="position: relative; border: 1px solid brown; margin: 10px; padding: 10px; width: 200px; flex: 0 0 auto;">
                     <a href="{{ url('produto/' . $produto->id) }}">
                         <img src="{{ asset('/img/produtos/' . $produto->imagem) }}" 
                             alt="{{ $produto->nome }}" 

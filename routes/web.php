@@ -11,7 +11,7 @@ Route::get('/favoritos', [ClienteController::class, 'favoritos'])->middleware('a
 Route::get('/categoria/{categ}', [ClienteController::class, 'categoria'])->middleware('auth')->name('cliente.categoria');
 Route::get('/buscar/{busca}', [ClienteController::class, 'buscar'])->middleware('auth');
 Route::get('/carrinho', [ClienteController::class, 'carrinho'])->middleware('auth')->name('cliente.carrinho');;
-Route::get('produto/{id}', [ClienteController::class, 'produto'])->middleware('auth');
+Route::get('produto/{id}', [ClienteController::class, 'produto'])->middleware('auth')->name('cliente.produto');
 Route::post('/toggle-favorito', [ClienteController::class, 'toggle'])->middleware('auth');
 Route::post('/toggle-carrinho', [ClienteController::class, 'toggleCarrinho'])->middleware('auth');
 Route::post('/finalizar-compra', [ClienteController::class, 'finalizarCompra'])->middleware('auth')->name('cliente.finalizarCompra');

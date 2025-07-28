@@ -115,6 +115,10 @@ div.emAlta-container{
     box-sizing: border-box;
 }
 
+.produto-item:hover {
+    transform: translateY(-5px);
+}
+
 h3{
     margin: 5px;
     font-size: 1rem;
@@ -583,6 +587,7 @@ form[action="{{ route('logout') }}"] {
 .produto-imagem{
     width: 100%;
     height: 100%;
+    border-radius: 10px;
 }
 .grid-itens{
     background-color: #ffb668;
@@ -1177,6 +1182,8 @@ header{
     position: relative;
     width: 150px;
     height: 150px;
+    margin-bottom: 12px;
+    margin: auto;
 }
 
 @media (max-width: 335px) {
@@ -1256,12 +1263,6 @@ header{
     font-size: 20px;
 }
 
-.contador-promocao{
-    color: black;
-    font-weight: bold;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.1rem;
-}
 
 .contador-promo {
     text-align: center;
@@ -1283,4 +1284,178 @@ header{
 
 footer{
     width: 100%;
+}
+h2 {
+    font-family: 'Eczar', serif;
+    color: #F2A340;
+    font-size: 2rem;
+    border-bottom: 2px solid #F2A340;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+/* ---- Cards de produtos ---- */
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-weight: bold;
+    color: #333;
+}
+
+.card-text {
+    font-size: 16px;
+}
+
+/* ---- Estrelas de avaliação ---- */
+.estrela {
+    font-size: 16px;
+    color: gray
+}
+
+.estrela.amarela {
+    color: #FFD700;
+}
+
+/* ---- Contador de promoção ---- */
+.contador-promocao{
+    font-weight: bold;
+    font-family: 'Rajdhani', sans-serif;
+    color: #C62828;
+    background: #fff3e0;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 13px;
+}
+
+/* ---- Botões no carrossel ---- */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.carousel-caption {
+    font-family: 'Eczar', serif;
+}
+
+/* ---- Scroll de recomendações ---- */
+#produtos,
+.emAlta-container {
+    padding: 10px 20px;
+    gap: 20px;
+    scroll-snap-type: x mandatory;
+}
+.relacionado-item:hover{
+    transform: translateY(-5px);
+}
+
+.produto-item {
+    scroll-snap-align: start;
+}
+
+/* ---- Footer elegante ---- */
+footer {
+    background-color: #212121;
+    color: #ccc;
+    font-size: 14px;
+    padding: 30px;
+    border-top: 4px solid #F2A340;
+}
+
+/* ---- Header estilizado ---- */
+header {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ---- Inputs de busca ---- */
+input#procurar {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ---- Ícones de carrinho e coração ---- */
+.carrinho-icon,
+.heart-icon {
+    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2));
+    transition: transform 0.2s;
+}
+
+.carrinho-icon:hover,
+.heart-icon:hover {
+    transform: scale(1.1);
+}
+
+/* ---- Botões customizados ---- */
+.btn-success,
+.btn-primary,
+.btn-danger {
+    border: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-success:hover {
+    background-color: #1e7e34;
+}
+
+.btn-primary:hover {
+    background-color: #e69a00;
+}
+
+.btn-danger:hover {
+    background-color: #a71d2a;
+}
+
+.grid-itens {
+    background: linear-gradient(145deg, #ffd6a0, #ffe9c7);
+    border: 1px solid #ffbb66;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 16px;
+    transition: all 0.3s ease;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.grid-itens:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    background: linear-gradient(145deg, #ffcb90, #ffe2b8);
+}
+
+.grid-itens:hover .produto-imagem {
+    transform: scale(1.05);
+}
+
+.contador-promo {
+    background-color: #fef3c7;
+    color: #92400e;
+    font-weight: bold;
+    border: 1px solid #fde68a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .grid-itens {
+        padding: 12px;
+    }
+}
+
+.precoEDesconto{
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center;
 }

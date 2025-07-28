@@ -43,7 +43,7 @@
                         </a>
                     </div>
                 @endif
-                    <abbr title="Sair da conta" style="cursor: pointer" onclick="abrirModalPerfil()">
+                    <abbr title="Perfil" style="cursor: pointer" onclick="abrirModalPerfil()">
                         <img src="/img/foto.jpg" alt="Perfil" id="perfil" style="cursor: pointer;">
                     </abbr>
             </div>
