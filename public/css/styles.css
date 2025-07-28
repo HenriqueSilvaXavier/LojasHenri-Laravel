@@ -178,7 +178,6 @@ color: black;
 }
 del{
     color: red;
-    margin-right: 10px;
 }
 .verde{
     color: #02B126;
@@ -1641,4 +1640,43 @@ footer .copyright {
     padding-top: 15px;
     font-size: 13px;
     color: #aaa;
+}
+
+/* Estilização da categoria como uma tag */
+#aoLado2 p#categoria {
+    display: inline-block;
+    width: fit-content;
+    background-color: #ffb668;
+    color: #4a2800;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* Preço com e sem desconto */
+div#precoContainer{
+    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#aoLado2 .percentual-desconto {
+    background-color: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+/* Vencimento da promoção */
+#aoLado2 .fim-promocao {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 4px;
 }

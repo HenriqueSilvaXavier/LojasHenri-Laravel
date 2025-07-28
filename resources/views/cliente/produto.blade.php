@@ -15,27 +15,33 @@
             <img src="/img/produtos/{{ $produto->imagem }}" alt="Imagem do produto" id="produtoDestacado">
         </div>
         <div id="aoLado2">
-            <p>{{ $produto->categoria }}</p>
-            <p class="inline">
-                @if ($produto->promocao > 0)
-                    <del style="color: red;">R$ {{ number_format($produto->preco, 2, ',', '.') }}</del> 
+            <p id="categoria">{{ $produto->categoria }}</p>
+            <div id="precoContainer">
+                @if ($produto->promocao > 0 && (!$produto->fim_promocao || \Carbon\Carbon::parse($produto->fim_promocao)->isFuture()))
+                    <span><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></span>
+                    <span>
+                        R$ {{ number_format($produto->preco - ($produto->promocao / 100) * $produto->preco, 2, ',', '.') }}
+                    </span>
+                @elseif  ($produto->promocao > 0 && $produto->fim_promocao && \Carbon\Carbon::parse($produto->fim_promocao)->isPast())
+                    <span>R$ {{ number_format($produto->preco, 2, ',', '.') }}</span>
+                @else
+                    <span>R$ {{ number_format($produto->preco, 2, ',', '.') }}</span>
                 @endif
-                R$ {{ number_format($produto->preco - ($produto->promocao / 100) * $produto->preco, 2, ',', '.') }}
-            </p>
-            @if ($produto->promocao > 0 && !$produto->fim_promocao || \Carbon\Carbon::parse($produto->fim_promocao)->isFuture())
-                <p class="inline">({{ $produto->promocao }}% de desconto)</p>
-            @endif
+                @if ($produto->promocao > 0 && (!$produto->fim_promocao || \Carbon\Carbon::parse($produto->fim_promocao)->isFuture()))
+                    <span><strong>(-{{ $produto->promocao }}% de desconto)</strong></span>
+                @endif
+            </div>
 
-            @if ($produto->fim_promocao)
+            @if ($produto->fim_promocao && $produto->promocao)
                 @php
                     $agora = \Carbon\Carbon::now();
                     $fim = \Carbon\Carbon::parse($produto->fim_promocao);
                 @endphp
                 @if ($fim->isFuture())
-                    <p>Promoção vence em {{ $fim->format('d/m/Y H:i') }}.</p>
+                    <p class="fim-promocao">Promoção válida até {{ $fim->format('d/m/Y H:i') }}</p>
                 @endif
-            @else
-                <p><em>Sem data de término definida</em></p>
+            @elseif($produto->promocao > 0)
+                <p class="fim-promocao"><em>Sem data de término definida</em></p>
             @endif
 
             <div id="inline">
