@@ -83,10 +83,10 @@
             <p id="produtoDescricao">{{ $produto->descricao }}</p>
             <p><strong>Formas de pagamento: </strong></p>
             <div id="formasDePagamento">
-                <img src="/img/hipercard.svg" alt="Símbolo do Hipercard" id="hipercard" class="formas" onclick="escolherForma(this)">
-                <img src="/img/mastercard.png" alt="Símbolo do Mastercard" id="mastercard" class="formas" onclick="escolherForma(this)">
-                <img src="/img//logo.png" alt="Símbolo do Cartão das Lojas Henri" id="lojasHenri" class="formas" onclick="escolherForma(this)">
-                <img src="/img/pix.png" alt="Símbolo do Pix" id="pix" class="formas" onclick="escolherForma(this)">
+                <img src="/img/hipercard.svg" alt="Símbolo do Hipercard" id="hipercard" onclick="escolherForma(this)">
+                <img src="/img/mastercard.png" alt="Símbolo do Mastercard" id="mastercard" onclick="escolherForma(this)">
+                <img src="/img//logo.png" alt="Símbolo do Cartão das Lojas Henri" id="lojasHenri" onclick="escolherForma(this)">
+                <img src="/img/pix.png" alt="Símbolo do Pix" id="pix" onclick="escolherForma(this)">
             </div>
         </div>
     </div>

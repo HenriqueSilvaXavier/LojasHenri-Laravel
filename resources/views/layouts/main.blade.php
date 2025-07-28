@@ -116,24 +116,37 @@
 
     @yield('content')
 
-    <div id="redesSociais">
-        <h2 id="fale">Fale conosco</h2>
-        <p id="whatsapp-texto">(81)8552-1110 <img src="/img/whatsapp.png" alt="WhatsApp" id="whatsapp"></p>
-        <div id="redes">
-            <a href="https://www.instagram.com/henriquesilvaxavier8/" target="_blank">
-                <img src="/img/instagram.png" alt="Instagram">
-            </a>
-            <a href="https://www.youtube.com/@henriquesilva6249/" target="_blank">
-                <img src="/img/youtube.png" alt="YouTube">
-            </a>
-            <a href="https://www.linkedin.com/in/henrique-silva-xavier-3a4047241/" target="_blank">
-                <img src="/img/linkedin.png" alt="LinkedIn">
-            </a>
-        </div>
-    </div>
-
     <footer>
-        &copy; 2024 Henrique Silva Xavier. Todos os direitos reservados.
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>Sobre</h4>
+                <p>Somos a Lojas Henri, comprometida com os melhores preços e recomendações personalizado.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Links úteis</h4>
+                <ul>
+                    <li><a href="{{ route('cliente.welcome') }}">Início</a></li>
+                    <li><a href="{{ route('cliente.favoritos') }}">Favoritos</a></li>
+                    <li><a href="{{ route('cliente.carrinho') }}">Carrinho</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contato</h4>
+                <p>Email: henriquesx44@gmail.com</p>
+                <p>WhatsApp: (81) 8552-1110</p>
+            </div>
+            <div class="footer-section">
+                <h4>Redes Sociais</h4>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/henriquesilvaxavier8/" target="_blank"><img src="/img/instagram.png" alt="Instagram"></a>
+                    <a href="https://www.youtube.com/@henriquesilva6249/" target="_blank"><img src="/img/youtube.png" alt="YouTube"></a>
+                    <a href="https://www.linkedin.com/in/henrique-silva-xavier-3a4047241/" target="_blank"><img src="/img/linkedin.png" alt="LinkedIn"></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; <span id="anoAtual"></span> Henrique Silva Xavier. Todos os direitos reservados.
+        </div>
     </footer>
 
     <!-- Scripts -->
