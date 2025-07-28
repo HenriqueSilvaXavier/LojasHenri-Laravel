@@ -58,11 +58,11 @@
                         $fim = $produto->fim_promocao ? \Carbon\Carbon::parse($produto->fim_promocao) : null;
                     @endphp
 
-                    <div style="display: flex; flex-wrap: wrap;">
+                    <div class="precoEDesconto">
                         <p class="card-text text-danger mb-1">
                             <small><del>R$ {{ number_format($produto->preco, 2, ',', '.') }}</del></small>
                         </p>
-                        <p class="card-text fw-bold">
+                        <p class="card-text">
                             R$ {{ number_format($precoPromocional, 2, ',', '.') }}
                         </p>
                     </div>

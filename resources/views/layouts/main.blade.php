@@ -8,7 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
     <header id="header">
@@ -69,7 +72,7 @@
                                 <p>{{ Auth::user()->email }}</p>
                             </div>
                         </div>
-                        @if($isClienteController && Auth::user()->is_admin == 0)
+                        @if($isClienteController && Auth::user()->isAdmin() == true)
                             <div class="modal-footer">
                                 <a href="{{ route('admin') }}" class="btn btn-primary">
                                     <i class="fas fa-tachometer-alt me-1"></i> Ir para o Admin
@@ -117,7 +120,7 @@
 
     <div id="redesSociais">
         <h2 id="fale">Fale conosco</h2>
-        <p>(81)8552-1110 <img src="/img/whatsapp.png" alt="WhatsApp" id="whatsapp"></p>
+        <p id="whatsapp-texto">(81)8552-1110 <img src="/img/whatsapp.png" alt="WhatsApp" id="whatsapp"></p>
         <div id="redes">
             <a href="https://www.instagram.com/henriquesilvaxavier8/" target="_blank">
                 <img src="/img/instagram.png" alt="Instagram">

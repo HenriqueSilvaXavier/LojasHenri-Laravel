@@ -40,6 +40,7 @@
             <option value="preco" {{ request('campo') == 'preco' ? 'selected' : '' }}>Preço</option>
             <option value="categoria" {{ request('campo') == 'categoria' ? 'selected' : '' }}>Categoria</option>
             <option value="promocao" {{ request('campo') == 'promocao' ? 'selected' : '' }}>Promoção</option>
+            <option value="fim_promocao" {{ request('campo') == 'fim_promocao' ? 'selected' : '' }}>Fim da Promoção</option>
             <option value="estoque" {{ request('campo') == 'estoque' ? 'selected' : '' }}>Estoque</option>
         </select>
 

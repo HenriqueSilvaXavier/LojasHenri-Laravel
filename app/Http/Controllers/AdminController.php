@@ -5,19 +5,46 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Produto;
+use Carbon\Carbon;
 
 class AdminController extends Controller{
     public function adminIndex(Request $request){
-        \Log::info('Página atual:', ['page' => $request->get('page')]);
-
         $page = $request->get('page', 1);
         $search = $request->input('search');
         $campo = $request->input('campo', 'nome'); // padrão: nome
 
         $query = Produto::query();
 
-        if (!is_null($search) && in_array($campo, ['nome', 'preco', 'categoria', 'promocao', 'estoque'])) {
-            $query->where($campo, 'like', "%{$search}%");
+        if (!is_null($search) && in_array($campo, ['nome', 'preco', 'categoria', 'promocao', 'estoque', 'fim_promocao'])) {
+            if ($campo === "fim_promocao") {
+                // Tenta múltiplos formatos de data
+                $formatos = ['d/m/Y H:i', 'd/m/Y', 'd/m']; // d/m é mais permissivo, cuidado
+                $dataConvertida = null;
+
+                foreach ($formatos as $formato) {
+                    try {
+                        $dataConvertida = \Carbon\Carbon::createFromFormat($formato, $search);
+                        break;
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+                }
+
+                if ($dataConvertida) {
+                    $query->whereNotNull('fim_promocao');
+
+                    // Se o usuário digitou apenas a data (sem hora), buscamos por toda a data
+                    if (strlen($search) <= 10) {
+                        $query->whereDate('fim_promocao', '=', $dataConvertida->format('Y-m-d'));
+                    } else {
+                        $query->where('fim_promocao', '=', $dataConvertida->format('Y-m-d H:i:s'));
+                    }
+                } else {
+                    \Log::warning('Formato inválido de fim_promocao: ' . $search);
+                }
+            } else {
+                $query->where($campo, 'like', "%{$search}%");
+            }
         }
 
         $produtos = $query->paginate(100, ['*'], 'page', $page)
@@ -26,6 +53,7 @@ class AdminController extends Controller{
 
         return view('admin.index', compact('produtos'));
     }
+
 
     public function create(){
         $categorias = Produto::select('categoria')->distinct()->pluck('categoria');
@@ -38,7 +66,9 @@ class AdminController extends Controller{
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
         $produto->promocao = $request->promocao;
-        $produto->fim_promocao = $request->fim_promocao;
+        if ($request->fim_promocao) {
+            $produto->fim_promocao = Carbon::parse($request->fim_promocao)->timezone('America/Sao_Paulo');
+        }
         $produto->categoria = $request->categoria;
         $produto->estoque = $request->estoque;
         if($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
@@ -64,7 +94,9 @@ class AdminController extends Controller{
         $produto->descricao = $request->descricao;
         $produto->preco = $request->preco;
         $produto->promocao = $request->promocao;
-        $produto->fim_promocao = $request->fim_promocao;
+        if ($request->fim_promocao) {
+            $produto->fim_promocao = Carbon::parse($request->fim_promocao)->timezone('America/Sao_Paulo');
+        }
         $produto->categoria = $request->categoria;
         $produto->estoque = $request->estoque;
         if ($request->filled('fim_promocao')) {
