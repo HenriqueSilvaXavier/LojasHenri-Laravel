@@ -100,7 +100,7 @@
         <p id="nota">
             Nota geral:
             @for($i = 1; $i <= 5; $i++)
-                <span class="estrela {{ $i <= $mediaNotas ? '' : 'cinza' }}">&#9733;</span>
+                <span class="estrela {{ $i <= $mediaNotas ? 'amarela' : 'cinza' }}">&#9733;</span>
             @endfor
             {{ number_format($mediaNotas, 1, ',', '.') }}
         </p>
