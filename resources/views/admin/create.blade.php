@@ -4,7 +4,7 @@
 
 @section('content')
 <div id="product-create-container" class="col-md-6 offset-md-3 bg-white p-4 rounded shadow-sm">
-  <h1 class="text-center mb-4" style="font-family: 'Eczar', serif; color: #F2A340;">Cadastro de Produto</h1>
+  <h2 class="text-center mb-4" style="font-family: 'Eczar', serif; color: #F2A340;">Cadastro de Produto</h1>
 
   <form action="{{ route('produtos.store') }}" method="POST" enctype="multipart/form-data">
     @csrf

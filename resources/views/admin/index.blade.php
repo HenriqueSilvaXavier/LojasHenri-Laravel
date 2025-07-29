@@ -11,6 +11,11 @@
     #campo{
         max-width: 140px;
     }
+    @media (max-width: 256px) {
+        header{
+            justify-content: center !important;
+        }
+    }
 </style>
 
 <script>

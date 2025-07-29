@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    <h2 class="text-2xl font-bold mb-6">Produtos da categoria: {{ $categ }}</h2>
+    <h2 class="font-bold mb-6">Produtos da categoria: {{ $categ }}</h2>
 
     <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
         @forelse ($produtos as $produto)

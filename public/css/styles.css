@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 
@@ -49,9 +49,6 @@ input#procurar {
 ul{
     display: flex;
 }
-li{
-    margin-right: 35px;
-}
 #menu{
     width: 40px;
     height: 40px;
@@ -73,6 +70,7 @@ div#categorias>ul>li{
 }
 h2{
     margin: 20px;
+    text-align: center;
 }
 div#categorias{
     background-color: burlywood;
@@ -89,9 +87,6 @@ div#categorias{
     width: 400px;
     grid-column: 1;
     grid-row: 2 / span 2;
-}
-h2{
-    text-align: center;
 }
 div#produtos{
     display: flex;
@@ -356,12 +351,14 @@ del{
 }
 
 /* Título principal */
-#product-create-container h1 {
+#product-create-container h2 {
     font-family: "Eczar", serif;
     color: #F2A340;
     font-weight: bold;
     text-align: center;
     margin-bottom: 30px;
+    font-size: 26.02px;
+    border: none;
 }
 
 /* Rótulos */
@@ -1147,6 +1144,15 @@ header{
     margin: auto;
 }
 
+@media (max-width: 228px){
+    .img-container{
+        width: 100%;
+    }
+    .grid-itens{
+        padding: 0 !important;
+    }
+}
+
 @media (max-width: 335px) {
     #procurar {
         width: 90% !important;
@@ -1680,4 +1686,32 @@ div#precoContainer{
     font-size: 0.9em;
     color: #555;
     margin-top: 4px;
+}
+
+@media (max-width: 304px) {
+    h2{
+        font-size: 130% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    header{
+        width: 100% !important;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .contador-promocao{
+        margin-top: 5px;
+    }
+}
+.footer-section ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 30px 30px;
+    background-color: rgba(0, 0, 0, 0.9);
 }
