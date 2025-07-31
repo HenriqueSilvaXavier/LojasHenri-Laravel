@@ -20,6 +20,10 @@ class ClienteController extends Controller
         // Carrossel de promoções
         $carrosselProdutos = Produto::where('promocao', '>', 0)
             ->where('estoque', '>', 0)
+            ->where(function ($query) {
+                $query->whereNull('fim_promocao')
+                    ->orWhere('fim_promocao', '>=', Carbon::now());
+            })
             ->orderByDesc('promocao')
             ->take(5)
             ->get();
